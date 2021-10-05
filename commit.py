@@ -20,6 +20,22 @@ def run():
         print("Error! Untracked or modified files present.\nUse octa add to unstaged and modified files for commit.")
         return
 
+    print("Check Complete!\nChanges can be committed successfully.")
+
+    print("Starting commit.")
+    stage_hash = _getHash(hashfile)
+    _createZip(prexdf, stage_hash)
+
+
+def _createZip(prexdf, stage_hash):
+    # create a ZipFile object
+    # zipObj = ZipFile(os.path.join('.', '.octa', f'{stage_hash}.zip', 'w')
+    # add files to the zip
+    '''sdfsdf'''
+    # zipObj.write(filename='aac.pdf', arcname='xc')
+    # close the Zip File
+    # zipObj.close()
+
 
 def _createFileDataFrame(files):
     file_hash_list = []
@@ -53,8 +69,8 @@ def _getAllFiles(path):
 
 def _absoluteFilePaths(directory):
     for dirpath, dirnames, filenames in os.walk(directory):
-        if ".octa" in dirnames:
-            dirnames.remove(".octa")
+        # if ".octa" in dirnames:
+        #     dirnames.remove(".octa")
 
         for f in filenames:
             yield os.path.relpath(os.path.join(dirpath, f)).replace(os.sep, '/')
