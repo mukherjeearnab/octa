@@ -9,7 +9,7 @@ def run():
     rootdir = './'
     files = _getAllFiles(rootdir)
     filesdf = _createFileDataFrame(files)
-
+    _createCSVDump(filesdf)
     print(f'Added {len(files)} files.')
 
 
