@@ -44,6 +44,9 @@ def _getAllFiles(path):
 
 
 def _absoluteFilePaths(directory):
-    for dirpath, _, filenames in os.walk(directory):
+    for dirpath, dirnames, filenames in os.walk(directory):
+        if ".octa" in dirnames:
+            dirnames.remove(".octa")
+
         for f in filenames:
             yield os.path.relpath(os.path.join(dirpath, f)).replace(os.sep, '/')
