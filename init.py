@@ -9,7 +9,7 @@ def run():
 
 def _createIndexingFile():
     with open(os.path.join('.', '.octa', 'index.txt'), 'w') as out:
-        out.write("")
+        out.write("stage_hash,timestamp\n")
     print("Initialized index file.")
 
 
