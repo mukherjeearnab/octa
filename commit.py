@@ -2,6 +2,7 @@ import os
 from zipfile import ZipFile
 import hashlib
 import pandas as pd
+from datetime import date
 
 
 def run():
@@ -25,9 +26,8 @@ def run():
 
     print("Starting commit.")
     stage_hash = _getHash(hashfile)
-    # _createZip(prexdf, stage_hash)
-    print(_getModifiedFiles(filesdf))
-    # _getStageHash()
+    modified_files = _getModifiedFiles(filesdf)
+    _createZip(modified_files, stage_hash)
 
 
 def _getStageHash(n_stage=0):
@@ -67,14 +67,34 @@ def _getLastCommitStageHash():
         return '0000'
 
 
-def _createZip(prexdf, stage_hash):
+def _createZip(file_df, stage_hash):
     # create a ZipFile object
-    # zipObj = ZipFile(os.path.join('.', '.octa', f'{stage_hash}.zip', 'w')
-    # add files to the zip
-    '''sdfsdf'''
-    # zipObj.write(filename='aac.pdf', arcname='xc')
+    today = _getCurrentDate()
+    commit_zip_name = os.path.join(
+        '.', '.octa', f'octa_commit_{stage_hash}_{today}.zip')
+    zipObj = ZipFile(commit_zip_name, 'w')
+
+    # add index and stage files to zip file
+    zipObj.write(filename=os.path.join(
+        '.', '.octa', f'octa_stage_{stage_hash}.csv'), arcname=f'.octa_stage_{stage_hash}.csv')
+    zipObj.write(filename=os.path.join(
+        '.', '.octa', 'index.csv'), arcname=f'.index.csv')
+
+    # Drop duplicate Hash files from File DataFrame
+    file_df = file_df.drop_duplicates(subset=['Hash'])
+    # Added All Modified Files to Zip
+    index = 1
+    for _, row in file_df.iterrows():
+        print(f"Committing file ({index}/{file_df.shape[0]})", end='\r')
+        zipObj.write(filename=row['FilePath'], arcname=row['Hash'])
+
     # close the Zip File
-    # zipObj.close()
+    zipObj.close()
+
+
+def _getCurrentDate():
+    today = date.today()
+    return str(today)
 
 
 def _createFileDataFrame(files):
