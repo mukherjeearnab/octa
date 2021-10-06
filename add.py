@@ -73,6 +73,9 @@ def _createFileDataFrame(files):
         file_hash = _getHash(filename)
         file_hash_list.append([file_hash, filename])
 
+    # Clear Carriage Row
+    print(f"                                                              ", end='\r')
+
     # Create Dataframe form 2D List
     file_hash_df = pd.DataFrame(file_hash_list, columns=['Hash', 'FilePath'])
 

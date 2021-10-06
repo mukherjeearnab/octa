@@ -95,6 +95,9 @@ def _createZip(file_df, stage_hash):
         print(f"Committing file ({index}/{file_df.shape[0]})", end='\r')
         zipObj.write(filename=row['FilePath'], arcname=row['Hash'])
 
+    # Clear Carriage Row
+    print(f"                                                              ", end='\r')
+
     # close the Zip File
     zipObj.close()
 
@@ -121,6 +124,9 @@ def _createFileDataFrame(files):
         print(f"Calculating file ({index}/{len(files)})", end='\r')
         file_hash = _getHash(filename)
         file_hash_list.append([file_hash, filename])
+
+    # Clear Carriage Row
+    print(f"                                                              ", end='\r')
 
     # Create Dataframe form 2D List
     file_hash_df = pd.DataFrame(file_hash_list, columns=['Hash', 'FilePath'])
