@@ -5,7 +5,8 @@ import pandas as pd
 
 
 def run():
-    hashfile = os.path.join('.', '.octa', 'files.csv')
+    current_hash = _getStageHash()
+    hashfile = os.path.join('.', '.octa', f'octa_stage_{current_hash}.csv')
     # Check if files.csv exists
     if not os.path.isfile(hashfile):
         print("Error! Files are not staged for commit.\nUse octa add to stage files for commit.")
@@ -24,7 +25,46 @@ def run():
 
     print("Starting commit.")
     stage_hash = _getHash(hashfile)
-    _createZip(prexdf, stage_hash)
+    # _createZip(prexdf, stage_hash)
+    print(_getModifiedFiles(filesdf))
+    # _getStageHash()
+
+
+def _getStageHash(n_stage=0):
+    # Fetch Hash (if Exists)
+    indexdf = pd.read_csv(os.path.join('.', '.octa', 'index.csv'))
+    indexdf = indexdf.sort_values(by=['timestamp'], ascending=False)
+
+    # Return hash if exists, else '0000'
+    if len(indexdf['stage_hash'].tolist()) > n_stage:
+        return indexdf['stage_hash'].tolist()[n_stage]
+    else:
+        return '0000'
+
+
+def _getModifiedFiles(current_stage):
+    prev_hash = _getLastCommitStageHash()
+    hashfile = os.path.join('.', '.octa', f'octa_stage_{prev_hash}.csv')
+    if os.path.isfile(hashfile):
+        prev_stage = pd.read_csv(hashfile)
+        current_stage = current_stage[~current_stage['Hash'].isin(
+            prev_stage['Hash'])]
+
+        return current_stage
+    else:
+        return current_stage
+
+
+def _getLastCommitStageHash():
+    last_commit_file = os.path.join('.', '.octa', 'last_commit.txt')
+
+    # Check if Last commit exists, else return '0000'
+    if os.path.isfile(last_commit_file):
+        with open(last_commit_file, 'r') as reader:
+            last_commit = str(reader.read())
+        return last_commit
+    else:
+        return '0000'
 
 
 def _createZip(prexdf, stage_hash):
@@ -69,8 +109,8 @@ def _getAllFiles(path):
 
 def _absoluteFilePaths(directory):
     for dirpath, dirnames, filenames in os.walk(directory):
-        # if ".octa" in dirnames:
-        #     dirnames.remove(".octa")
+        if ".octa" in dirnames:
+            dirnames.remove(".octa")
 
         for f in filenames:
             yield os.path.relpath(os.path.join(dirpath, f)).replace(os.sep, '/')
