@@ -20,7 +20,8 @@ def _createCSVDump(filesdf):
     timestamp = _getTimestamp()
 
     # Rename file to Stage Hash
-    os.rename(filepath, os.path.join('.', '.octa', f'{csvHash}.csv'))
+    os.rename(filepath, os.path.join(
+        '.', '.octa', f'octa_stage_{csvHash}.csv'))
 
     # Add Stage to index file
     with open(os.path.join('.', '.octa', 'index.csv'), 'a') as out:
@@ -67,4 +68,5 @@ def _absoluteFilePaths(directory):
         #     dirnames.remove(".octa")
 
         for f in filenames:
-            yield os.path.relpath(os.path.join(dirpath, f)).replace(os.sep, '/')
+            if 'octa_stage_' not in f:
+                yield os.path.relpath(os.path.join(dirpath, f)).replace(os.sep, '/')
