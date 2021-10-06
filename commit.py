@@ -78,7 +78,7 @@ def _createZip(file_df, stage_hash):
     # create a ZipFile object
     today = _getCurrentDate()
     commit_zip_name = os.path.join(
-        '.', '.octa', f'octa_commit_{stage_hash}_{today}.zip')
+        '.', f'octa_commit_{stage_hash}_{today}.zip')
     zipObj = ZipFile(commit_zip_name, 'w')
 
     # add index and stage files to zip file
