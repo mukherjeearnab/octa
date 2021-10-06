@@ -9,8 +9,39 @@ def run():
     rootdir = './'
     files = _getAllFiles(rootdir)
     filesdf = _createFileDataFrame(files)
-    _createCSVDump(filesdf)
-    print(f'Added {len(files)} files.')
+    if not _checkDuplicateStage(filesdf):
+        _createCSVDump(filesdf)
+        print(f'Added {len(files)} files.')
+    else:
+        print("All files already staged for commit.")
+
+
+def _checkDuplicateStage(curent_stage):
+    # Get Previous Stage (If exists)
+    prev_hash = _getStageHash()
+    hashfile = os.path.join('.', '.octa', f'octa_stage_{prev_hash}.csv')
+
+    # Check Current and Previous Stage
+    if os.path.isfile(hashfile):
+        prev_stage = pd.read_csv(hashfile)
+        if curent_stage.equals(prev_stage):
+            return True
+        else:
+            return False
+    else:
+        return False
+
+
+def _getStageHash(n_stage=0):
+    # Fetch Hash (if Exists)
+    indexdf = pd.read_csv(os.path.join('.', '.octa', 'index.csv'))
+    indexdf = indexdf.sort_values(by=['timestamp'], ascending=False)
+
+    # Return hash if exists, else '0000'
+    if len(indexdf['stage_hash'].tolist()) > 0:
+        return indexdf['stage_hash'].tolist()[n_stage]
+    else:
+        return '0000'
 
 
 def _createCSVDump(filesdf):
