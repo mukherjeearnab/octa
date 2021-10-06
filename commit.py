@@ -2,7 +2,7 @@ import os
 from zipfile import ZipFile
 import hashlib
 import pandas as pd
-from datetime import date
+from datetime import datetime
 
 
 def run():
@@ -111,7 +111,7 @@ def _createZip(file_df, stage_hash):
 
 
 def _getCurrentDate():
-    today = date.today()
+    today = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
     return str(today)
 
 
