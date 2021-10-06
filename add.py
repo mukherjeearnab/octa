@@ -23,7 +23,7 @@ def _createCSVDump(filesdf):
     os.rename(filepath, os.path.join('.', '.octa', f'{csvHash}.csv'))
 
     # Add Stage to index file
-    with open(os.path.join('.', '.octa', 'index.txt'), 'w') as out:
+    with open(os.path.join('.', '.octa', 'index.csv'), 'a') as out:
         out.write(f'{csvHash},{timestamp}\n')
 
 
