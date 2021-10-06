@@ -67,6 +67,13 @@ def _getLastCommitStageHash():
         return '0000'
 
 
+def _setLastCommitStageHash(commit_hash):
+    last_commit_file = os.path.join('.', '.octa', 'last_commit.txt')
+
+    with open(last_commit_file, 'w') as writer:
+        writer.write(commit_hash)
+
+
 def _createZip(file_df, stage_hash):
     # create a ZipFile object
     today = _getCurrentDate()
@@ -90,6 +97,14 @@ def _createZip(file_df, stage_hash):
 
     # close the Zip File
     zipObj.close()
+
+    # Update Last Commit Log
+    _setLastCommitStageHash(stage_hash)
+
+    # Print Commit details
+    print('Commit Successful!')
+    print(f'Commit Hash: {stage_hash}')
+    print(f'Commit Zip Dump: {commit_zip_name}')
 
 
 def _getCurrentDate():
